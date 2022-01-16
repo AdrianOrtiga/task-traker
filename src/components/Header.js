@@ -1,11 +1,16 @@
 import PropTypes from 'prop-types'
 import Button from './Button'
 
-export default function Header({title}) {
+export default function Header({title, toggleAddTask, showAddTask }) {
     return (
         <header className='header'>
-            <h1>{title}</h1>
-            <Button color='green' text='Add' onClick={() => alert('sorry I am lazy')} />
+            <div style={{display: 'flex'}}>
+                <h1>{title}</h1>
+                {/* <Button className='btn' text='Login' /> */}
+            </div>
+            <Button color={showAddTask ? 'red' : 'green'} 
+                    text={showAddTask ? 'Close' : 'Add'} 
+                    onClick={() => toggleAddTask()} />
         </header>
     )
 }
