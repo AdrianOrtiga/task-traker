@@ -17,13 +17,12 @@ export default function AddTask({ addTask={addTask} }) {
             alert('Please add date')
             return
         }
-        
+
         addTask({text:text, date:date,reminder:reminder})
 
         setText('')
         setDate('')
         setReminder(false)
-        
     }
 
     return (
@@ -34,7 +33,7 @@ export default function AddTask({ addTask={addTask} }) {
             </div>
             <div className="form-control">
                 <label>Date and Time</label>
-                <input type='date' placeholder="Date and time" value={date} onChange={(e) => setDate(e.target.value)}/>
+                <input type='datetime-local' placeholder="Date and time" value={date} onChange={(e) => setDate(e.target.value)}/>
             </div>
             <div className="form-control form-control-check">
                 <label>Reminder</label>
