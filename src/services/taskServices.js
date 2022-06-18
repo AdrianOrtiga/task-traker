@@ -1,9 +1,8 @@
 const baseUrl = process.env.NODE_ENV === 'production'
-  ? process.env.BASE_URL :
-  `http://localhost:8000`
+  ? `https://task-traker-server-production.up.railway.app`
+  : `http://localhost:8000`
 
 const taskUrl = `${baseUrl}/tasks`
-
 
 const getAllTasks = async () => {
   const response = await fetch(taskUrl)
