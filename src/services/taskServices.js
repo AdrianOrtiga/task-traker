@@ -1,17 +1,18 @@
-const baseUrl = process.env.NODE_ENV === 'porduction'
+const baseUrl = process.env.NODE_ENV === 'production'
   ? process.env.BASE_URL :
-  `http://localhost:8000/tasks`
+  `http://localhost:8000`
 
+const taskUrl = `${baseUrl}/tasks`
 
 
 const getAllTasks = async () => {
-  const response = await fetch(baseUrl)
+  const response = await fetch(taskUrl)
   return await response.json()
 }
 
 const postNewTask = async (newTask) => {
   const response = await fetch(
-    baseUrl,
+    taskUrl,
     {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
@@ -22,7 +23,7 @@ const postNewTask = async (newTask) => {
 
 const deleteTask = async (selectedTask) => {
   const response = await fetch(
-    `${baseUrl}/${selectedTask._id}`,
+    `${taskUrl}/${selectedTask._id}`,
     {
       method: 'DELETE',
       headers: { 'content-type': 'application/json' },
@@ -33,7 +34,7 @@ const deleteTask = async (selectedTask) => {
 
 const toggleTask = async (selectedTask) => {
   const response = await fetch(
-    `${baseUrl}/${selectedTask._id}`,
+    `${taskUrl}/${selectedTask._id}`,
     {
       method: 'PATCH',
       headers: { 'content-type': 'application/json' },
