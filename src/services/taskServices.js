@@ -1,11 +1,14 @@
-const baseUrl = process.env.NODE_ENV === 'production'
-  ? `https://task-traker-server-production.up.railway.app`
-  : `http://localhost:8000`
+import baseUrl from "./serviceUrl"
 
 const taskUrl = `${baseUrl}/tasks`
 
 const getAllTasks = async () => {
-  const response = await fetch(taskUrl)
+  const response = await fetch(
+    taskUrl,
+    {
+      method: 'GET',
+      headers: getHeaders()
+    })
   return await response.json()
 }
 
@@ -14,7 +17,7 @@ const postNewTask = async (newTask) => {
     taskUrl,
     {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: getHeaders(),
       body: JSON.stringify(newTask)
     })
   return await response.json()
@@ -25,7 +28,7 @@ const deleteTask = async (selectedTask) => {
     `${taskUrl}/${selectedTask._id}`,
     {
       method: 'DELETE',
-      headers: { 'content-type': 'application/json' },
+      headers: getHeaders(),
       body: JSON.stringify(selectedTask)
     })
   return await response.json()
@@ -36,10 +39,19 @@ const toggleTask = async (selectedTask) => {
     `${taskUrl}/${selectedTask._id}`,
     {
       method: 'PATCH',
-      headers: { 'content-type': 'application/json' },
+      headers: getHeaders(),
       body: JSON.stringify(selectedTask)
     })
   return await response.json()
+}
+
+function getHeaders () {
+  const token = localStorage.getItem('token')
+
+  return {
+    'content-type': 'application/json',
+    'authorization': `bearer ${token}`
+  }
 }
 
 const taskServices = {

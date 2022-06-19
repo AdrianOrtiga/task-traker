@@ -1,64 +1,36 @@
-import { useState, useEffect } from 'react'
-import AddTask from './components/AddTask';
-import Header from "./components/Header";
-import Tasks from "./components/Tasks";
-import taskServices from './services/taskServices';
+import { useEffect, useState } from "react";
+import TaskPage from "./components/task/TaskPage"
+import AuthForm from "./components/auth/AuthForm"
+import authServices from "./services/auth";
+
 
 function App () {
-  const [showAddTask, setShowAddTask] = useState(false)
-  const [tasks, setTasks] = useState([])
+  const [logged, setLogged] = useState(false)
 
   useEffect(() => {
-    taskServices.getAllTasks()
-      .then(resJson => { setTasks([...resJson]) })
+    const token = localStorage.getItem('token')
+    if (token) setLogged(true)
   }, [])
-  //useEffect(() => console.log(tasks),[tasks])
-  //useEffect(() => tasks.forEach(task => { console.log(task._id)}),[tasks])
 
-  function toggleAddTask () {
-    setShowAddTask(!showAddTask)
+  function handleLoginSuccess () {
+    setLogged(true)
   }
 
-  function addTask (task) {
-    // let newTask = {...task, id:uuidv4()}
-    let newTask = { ...task }
-    taskServices.postNewTask(newTask).then(resJson => {
-      const id = resJson.newTask._id
-      newTask = { ...newTask, _id: id }
-      if (!resJson.hasOwnProperty('message')) {
-        setTasks(prevTask => [...prevTask, newTask])
-      } else alert('Ups! Something was wrong')
-    })
-  }
-
-  function deleteTask (id) {
-    let selectedTask = tasks.find((task) => task._id === id)
-    if (window.confirm(`Are you sure that you to delete the "${selectedTask.text}" task`)) {
-      taskServices.deleteTask(selectedTask)
-        .then(resJson => {
-          if (!resJson.hasOwnProperty('message')) {
-            setTasks(tasks.filter((task) => task._id !== id))
-          }
-          else alert('Ups! something when wrong')
-        })
-    }
-  }
-
-  function toggleReminder (id) {
-    let selectedTask = tasks.find((task) => task._id === id)
-    taskServices.toggleTask(selectedTask).then(resJson => {
-      if (!resJson.hasOwnProperty('message')) {
-        setTasks(tasks.map(task => task._id === id ? { ...task, reminder: !task.reminder } : task))
-      }
-      else alert('Ups! something when wrong')
+  function handleLogout () {
+    authServices.logout().then(res => {
+      localStorage.setItem('token', '')
+      setLogged(false)
     })
   }
 
   return (
-    <div className="container">
-      <Header toggleAddTask={toggleAddTask} showAddTask={showAddTask} />
-      {showAddTask && <AddTask addTask={addTask} />}
-      {tasks.length > 0 ? <Tasks tasks={tasks} deleteTask={deleteTask} toggleReminder={toggleReminder} /> : <h3>No tasks to show</h3>}
+    <div>
+      {
+        logged
+          ? <TaskPage handleLogout={handleLogout} />
+          : <AuthForm handleLoginSuccess={handleLoginSuccess} />
+      }
+
     </div>
   )
 }
